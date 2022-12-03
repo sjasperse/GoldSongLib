@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3758A5A9-C07D-4075-B10D-087F0408B5D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoldSongLib.Cli", "src\GoldSongLib.Cli\GoldSongLib.Cli.csproj", "{9F08393E-4DA4-4C40-8DA9-DB12CBC6F3AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoldSongLib.Core", "src\GoldSongLib.Core\GoldSongLib.Core.csproj", "{74FC0FCC-B901-43CE-892C-C6CB44EDF610}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoldSongLib.Api", "src\GoldSongLib.Api\GoldSongLib.Api.csproj", "{31395071-F679-4150-9E47-2ECE6DEE34B0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9F08393E-4DA4-4C40-8DA9-DB12CBC6F3AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F08393E-4DA4-4C40-8DA9-DB12CBC6F3AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F08393E-4DA4-4C40-8DA9-DB12CBC6F3AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F08393E-4DA4-4C40-8DA9-DB12CBC6F3AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74FC0FCC-B901-43CE-892C-C6CB44EDF610}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74FC0FCC-B901-43CE-892C-C6CB44EDF610}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74FC0FCC-B901-43CE-892C-C6CB44EDF610}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74FC0FCC-B901-43CE-892C-C6CB44EDF610}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31395071-F679-4150-9E47-2ECE6DEE34B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31395071-F679-4150-9E47-2ECE6DEE34B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31395071-F679-4150-9E47-2ECE6DEE34B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31395071-F679-4150-9E47-2ECE6DEE34B0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9F08393E-4DA4-4C40-8DA9-DB12CBC6F3AD} = {3758A5A9-C07D-4075-B10D-087F0408B5D3}
+		{74FC0FCC-B901-43CE-892C-C6CB44EDF610} = {3758A5A9-C07D-4075-B10D-087F0408B5D3}
+		{31395071-F679-4150-9E47-2ECE6DEE34B0} = {3758A5A9-C07D-4075-B10D-087F0408B5D3}
+	EndGlobalSection
+EndGlobal

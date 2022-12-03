@@ -1,0 +1,27 @@
+###############################
+# Core EditorConfig Options   #
+###############################
+root = true
+
+# All files
+[*]
+indent_style = space
+
+# XML project files
+[*.{csproj,props}]
+indent_size = 2
+
+# Code files
+[*.{cs}]
+indent_size = 4
+
+###############################
+# .NET Coding Conventions     #
+###############################
+[*.{cs,vb}]
+# Organize usings
+dotnet_sort_system_directives_first = true
+
+dotnet_style_namespace_match_folder = true
+dotnet_diagnostic.IDE0005.severity = warning # unused usings
+dotnet_diagnostic.CA1848.severity = none # logger extension methods
