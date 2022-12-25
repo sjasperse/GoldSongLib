@@ -25,3 +25,11 @@ dotnet_sort_system_directives_first = true
 dotnet_style_namespace_match_folder = true
 dotnet_diagnostic.IDE0005.severity = warning # unused usings
 dotnet_diagnostic.CA1848.severity = none # logger extension methods
+
+
+###############################
+# UI Coding Conventions     #
+###############################
+# XML project files
+[*.{ts,tsx,css,scss}]
+indent_size = 2
