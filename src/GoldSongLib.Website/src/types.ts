@@ -12,10 +12,12 @@ export type WorshipOrder = {
 }
 
 export type WorshipOrderSongSet = {
+  id: string,
   title: string,
   songs: WorshipOrderSong[]
 }
 
 export type WorshipOrderSong = {
-  songId: string
+  id: string,
+  songId: string | null
 }

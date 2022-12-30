@@ -1,15 +1,15 @@
 import { MouseEvent } from 'react';
 import { Formik, FormikContext, FormikErrors, FormikProps, useField, useFormik, useFormikContext, validateYupSchema } from 'formik';
 import _ from 'lodash';
-import { WorshipOrder } from './types';
+import { WorshipOrder } from '../types';
 import DatePicker from 'react-datepicker';
 
-export type ModifyWorshipOrderFormParams = {
+export type WorshipOrderEditorFormParams = {
   origWorshipOrder: WorshipOrder,
   onSubmit?: (worshipOrder: WorshipOrder) => Promise<void>
 }
 
-export default function ModifyWorshipOrderForm({ origWorshipOrder, onSubmit }: ModifyWorshipOrderFormParams
+export default function WorshipOrderEditorForm({ origWorshipOrder, onSubmit }:WorshipOrderEditorFormParams
 ) {
   return (
     <Formik
@@ -39,30 +39,39 @@ function Form(formik: FormikProps<WorshipOrder>) {
   });
 
   return (
-    <form onSubmit={formik.handleSubmit}>
+    <div>
       <div>
-        <label>Date</label>
-        <DatePickerField name="date" />
+        <form onSubmit={formik.handleSubmit}>
+          <div>
+            <label>Date</label>
+            <DatePickerField name="date" />
+          </div>
+
+          <div>
+            <label>Song Sets</label>
+            <ul>
+              {formik.values.songSets.map((songSet, songSetIndex) => <li key={songSetIndex}>
+                <fieldset>
+                  <legend>{songSet.title ?? 'Untitled'}</legend>
+                  <input type="text" {...fieldPropsFor(`songSets[${songSetIndex}].title`)} />
+                  <ul>
+                    {songSet.songs.map((song, songIndex) => <li key={song.songId}>
+                      
+                    </li>)}
+                  </ul>
+                </fieldset>
+              </li>)}
+            </ul>
+            <button onClick={onAddSongSet}>Add Song Set</button>
+          </div>
+
+
+          {/* <pre>
+            {JSON.stringify(formik.values, null, 2)}
+          </pre> */}
+        </form>
       </div>
-
-      <div>
-        <label>Song Sets</label>
-        <ul>
-          {formik.values.songSets.map((x, i) => <li key={i}>
-            <fieldset>
-              <legend>{x.title ?? 'Untitled'}</legend>
-              <input type="text" {...fieldPropsFor(`songSets[${i}].title`)} />
-            </fieldset>
-          </li>)}
-        </ul>
-        <button onClick={onAddSongSet}>Add Song Set</button>
-      </div>
-
-
-      <pre>
-        {JSON.stringify(formik.values, null, 2)}
-      </pre>
-    </form>
+    </div>
   );
 }
 

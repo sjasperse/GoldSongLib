@@ -12,8 +12,6 @@ export default function Songs() {
   const [songs, setSongs] = useState<Song[]>();
 
   useEffect(() => {
-
-
     loadSongs();
   }, []);
 
