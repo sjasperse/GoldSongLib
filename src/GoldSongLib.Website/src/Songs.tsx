@@ -1,6 +1,7 @@
 import { lazy, useEffect, useState } from "react"
 import { Link } from "react-router-dom";
 import Loading from "./Loading";
+import { getSongs } from "./services/apiClient";
 import newGuid from "./services/newGuid";
 
 type Song = {
@@ -16,15 +17,12 @@ export default function Songs() {
   }, []);
 
   async function loadSongs() {
-    const response = await fetch('/api/songs');
-    const songs = await response.json();
+    const songs = await getSongs();
     setSongs(songs);
   }
 
   async function deleteSong(id: string) {
-    await fetch(`/api/songs/${id}`, {
-      method: 'DELETE'
-    });
+    await deleteSong(id);
     await loadSongs();
   }
 

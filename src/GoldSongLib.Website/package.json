@@ -10,7 +10,9 @@
     "generate-api": "openapi-generator-cli generate -i http://localhost:7236/swagger/v1/swagger.json -g typescript-fetch -o ./src/api-client"
   },
   "dependencies": {
+    "@types/google.accounts": "^0.0.4",
     "@types/react-datepicker": "^4.8.0",
+    "axios": "^1.2.1",
     "formik": "^2.2.9",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
@@ -29,6 +31,7 @@
   "devDependencies": {
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.8",
+    "@types/uuid": "^9.0.0",
     "@vitejs/plugin-react": "^2.2.0",
     "typescript": "^4.6.4",
     "vite": "^3.2.3"

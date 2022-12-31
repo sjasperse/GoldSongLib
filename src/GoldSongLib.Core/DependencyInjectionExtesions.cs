@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -5,8 +6,10 @@ namespace GoldSongLib.Core;
 
 public static class DependencyInjectionExtesions
 {
-    public static ServiceCollection AddCore(this ServiceCollection services, IConfiguration config)
+    public static IServiceCollection AddCore(this IServiceCollection services, IConfiguration config)
     {
+        services.AddSingleton<IData, Data>();
+        
         return services;
     }
 }

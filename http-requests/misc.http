@@ -1,0 +1,20 @@
+### unauthenticated
+GET {{baseUrl}}/api/user
+
+### authenticated
+GET {{baseUrl}}/api/user
+Authorization: Bearer {{$dotenv TOKEN}}
+
+
+### login with google token
+POST {{baseUrl}}/api/user/login
+Content-Type: application/json
+
+{
+    "googleToken": "{{$dotenv GOOGLE_TOKEN}}"
+}
+
+### Get google profile
+GET https://oauth2.googleapis.com/tokeninfo?id_token={{$dotenv GOOGLE_TOKEN}}
+
+

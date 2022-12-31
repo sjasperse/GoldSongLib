@@ -1,4 +1,5 @@
 import { MouseEvent } from "react";
+import { addSong } from "./services/apiClient";
 import newGuid from "./services/newGuid";
 
 export default function AddSong() {
@@ -17,15 +18,10 @@ export default function AddSong() {
       return;
     }
 
-    await fetch(`/api/songs`, {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify({
-        id: newGuid(),
-        name: nameElement.value
-      })
+    await addSong({
+      id: newGuid(),
+      name: nameElement.value,
+      tags: []
     });
 
     history.back();
