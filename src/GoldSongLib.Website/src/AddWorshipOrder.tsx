@@ -9,15 +9,15 @@ export default function AddWorshipOrder() {
     songSets: [{
       id: newGuid(),
       title: 'Opening Song',
-      songs: [{ id: newGuid(), songId: null }]
+      songs: []
     }, {
       id: newGuid(),
       title: 'Song Set',
-      songs: [{ id: newGuid(), songId: null }, { id: newGuid(), songId: null }, { id: newGuid(), songId: null }]
+      songs: []
     }, {
       id: newGuid(),
       title: 'Song of Response',
-      songs: [{ id: newGuid(), songId: null }]
+      songs: []
     }],
     tags: []
   };

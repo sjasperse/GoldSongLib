@@ -19,7 +19,8 @@ export type WorshipOrderSongSet = {
 
 export type WorshipOrderSong = {
   id: string,
-  songId: string | null
+  name: string
+  songId: string,
 }
 
 export type User = {

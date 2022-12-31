@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { useDrag } from "react-dnd";
 import Loading from "../Loading";
 import { getSongs } from "../services/apiClient";
 import { Song } from "../types";
+import { SongDropResult } from "./WorshipOrderEditorForm";
 
 export default function SongReferenceLibrary() {
   const [songs, setSongs] = useState<Song[]>();
@@ -15,8 +17,22 @@ export default function SongReferenceLibrary() {
     {songs == undefined 
       ? <Loading />
       : <ul>
-        {songs.map(song => <li key={song.id}>{song.name}</li>)}
+        {songs.map(song => <SongReference key={song.id} song={song} />)}
       </ul>
     }
   </div>
+}
+
+function SongReference({ song }: { song: Song }) {
+  const [_, dragRef] = useDrag({
+    type: "Song",
+    item: song,
+    collect: monitor => {},
+    end: (_, monitor) => {
+      const dropResult = monitor.getDropResult<SongDropResult>();
+      dropResult?.onDropped(song);
+    }
+  });
+
+  return <li ref={dragRef}>{song.name}</li>
 }
