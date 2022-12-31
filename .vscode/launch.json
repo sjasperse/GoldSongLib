@@ -5,19 +5,43 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "GoldSongLib.Api",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/src/GoldSongLib.Api/bin/Debug/net6.0/GoldSongLib.Api.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/GoldSongLib.Api",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
             "name": "GoldSongLib Cli - Import Worship Orders",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/src/GoldSongLib.Cli/bin/Debug/net6.0/GoldSongLib.dll",
-            "args": ["import-worship-orders", "-f", "../../resources/worship-orders"],
+            "args": [
+                "import-worship-orders",
+                "-f",
+                "../../resources/worship-orders"
+            ],
             "cwd": "${workspaceFolder}/src/GoldSongLib.Cli",
             "console": "integratedTerminal",
             "stopAtEntry": false,
             "env": {
                 "Logging__Level__GoldSongLib": "Debug"
             }
-        }, 
+        },
         {
             "name": ".NET Core Attach",
             "type": "coreclr",

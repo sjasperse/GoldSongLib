@@ -1,22 +1,24 @@
 @import './variables';
 
 nav {
+  padding-left: 2em;
+  padding-right: 2em;
   height: $NavHeight;
   background: lightblue;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .menu {
   margin: 0;
-  padding: 0;
+  padding-inline-start: 0;
   display: flex;
-  align-items: flex-start;
-  justify-content: left;   
+  justify-content: space-around;   
   flex-wrap: nowrap;
   list-style-type: none;
 }
 
 .menu li {
-  padding: .5em 2em;
-  display: block; 
-  width: auto;
+  padding: 0 2em;
 }

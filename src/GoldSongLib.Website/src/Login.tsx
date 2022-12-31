@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 import { loginWithGoogleToken } from "./services/apiClient";
 import { useNavigate } from "react-router-dom";
+import { User } from "./types";
 
 const GOOGLE_CLIENT_ID = "991924951144-qs1d1be85pncp78eh2m29ndrri8qb46h.apps.googleusercontent.com";
 
-export default function Login() {
+type LoginParams = {
+  setUser: (user: User) => void
+};
+
+export default function Login({ setUser }: LoginParams) {
   const [gsiScriptLoaded, setGsiScriptLoaded] = useState(false);
   const navigate = useNavigate();
 
@@ -41,6 +46,7 @@ export default function Login() {
     const loginResponse = await loginWithGoogleToken(res.credential);
 
     localStorage.setItem('token', loginResponse.token);
+    setUser(loginResponse.user);
 
     navigate('/');
   };

@@ -21,3 +21,12 @@ export type WorshipOrderSong = {
   id: string,
   songId: string | null
 }
+
+export type User = {
+  id: string,
+  username: string,
+  givenName: string,
+  familyName: string,
+  fullName: string,
+  tenants: string[]
+}

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Song } from "../types";
+import { Song, User } from "../types";
 
 const apiClient = axios.create();
 apiClient.interceptors.request.use(config => {
@@ -38,7 +38,15 @@ export async function deleteSong(id: string): Promise<void> {
   });
 }
 
-export async function loginWithGoogleToken(googleToken: string): Promise<{ token: string}> {
+export async function getCurrentUser() : Promise<User | null> {
+    const response = await apiClient<User>('/api/user');
+
+    if (response.status != 200) return null;
+
+    return response.data;
+  }
+
+export async function loginWithGoogleToken(googleToken: string): Promise<{ token: string, user: User}> {
   const response = await apiClient('/api/user/login', {
     method: 'POST',
     headers: {

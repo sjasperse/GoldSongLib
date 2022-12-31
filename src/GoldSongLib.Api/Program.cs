@@ -19,6 +19,8 @@ rsa.ImportFromPem(privateKey);
 var jwtSigningKey = new RsaSecurityKey(rsa);
 var signingCredentials = new SigningCredentials(jwtSigningKey, SecurityAlgorithms.RsaSha256Signature);
 
+// need this line so it wont convert "sub" to name
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 // Add services to the container.
 builder.Services.AddCore(configuration);

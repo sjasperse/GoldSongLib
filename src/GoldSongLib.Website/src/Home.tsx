@@ -1,5 +1,5 @@
 export default function Home() {
     return <div>
-        <h1>Song Set Builder</h1>
+        <h1>GoldSongLib</h1>
     </div>
 }

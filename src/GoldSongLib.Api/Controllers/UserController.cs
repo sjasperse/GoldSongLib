@@ -14,16 +14,14 @@ namespace GoldSongLib.Api.Controllers;
 public class UserController : ControllerBase
 {
     [HttpGet]
-    public ActionResult GetUser()
+    public async Task<ActionResult> GetUser(
+        [FromServices] Core.IData dataClient,
+        CancellationToken cancellationToken    
+    )
     {
-        var payload = new Dictionary<string, string>();
-
-        foreach (var claim in this.User.Claims)
-        {
-            payload[claim.Type] = claim.Value;
-        }
-
-        return this.Ok(payload);
+        var username = this.User.Claims.First(x => x.Type == "sub").Value;
+        var user = await dataClient.GetUser(username, cancellationToken);
+        return this.Ok(user);
     }
 
     [HttpPost("login")]
@@ -86,7 +84,8 @@ public class UserController : ControllerBase
         await dataClient.GetTenantDataClient(new Core.Tenant(tenant)).EnsureInitialized();
         
         return this.Ok(new {
-            token = jwt
+            token = jwt,
+            user = user
         });
     }
 

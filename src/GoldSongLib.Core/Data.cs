@@ -40,7 +40,7 @@ public class Data : IData
 
     public async Task<UserModel?> GetUser(string username, CancellationToken cancellationToken)
     {
-        var blobClient = this.globalContainerClient.GetBlobClient($"users/{username.ToLower()}");
+        var blobClient = this.globalContainerClient.GetBlobClient($"users/{username.ToLower()}.json");
 
         if (!await blobClient.ExistsAsync(cancellationToken))
         {
