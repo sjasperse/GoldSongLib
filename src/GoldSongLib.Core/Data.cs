@@ -1,4 +1,5 @@
 using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using FluentResults;
 using GoldSongLib.Core.Models;
 
@@ -9,35 +10,26 @@ public interface IData
     Task EnsureInitialized();
 
     ITenantDataClient GetTenantDataClient(Tenant tenant);
-}
 
-public interface ITenantDataClient
-{
-    Task EnsureInitialized();
+    Task<UserModel?> GetUser(string username, CancellationToken cancellationToken);
 
-    Task<IEnumerable<SongModel>> GetSongsAsync(CancellationToken cancellationToken);
-    Task<Result> AddSongAsync(SongModel song, CancellationToken cancellationToken);
-    Task<Result> UpdateSongAsync(SongModel song, CancellationToken cancellationToken);
-    Task<Result> DeleteSongAsync(Guid songId, CancellationToken cancellationToken);
-
-    Task<IEnumerable<WorshipOrder>> GetWorshipOrders(CancellationToken cancellationToken);
-    Task<Result> AddWorshipOrderAsync(WorshipOrder song, CancellationToken cancellationToken);
-    Task<Result> UpdateWorshipOrderAsync(WorshipOrder song, CancellationToken cancellationToken);
-    Task<Result> DeleteWorshipOrderAsync(Guid worshipOrderId, CancellationToken cancellationToken);
+    Task<Result> AddUser(UserModel user, CancellationToken cancellationToken);
 }
 
 public class Data : IData
 {
     private readonly BlobServiceClient blobServiceClient;
+    private readonly BlobContainerClient globalContainerClient;
 
     public Data(BlobServiceClient blobServiceClient)
     {
         this.blobServiceClient = blobServiceClient;
+        this.globalContainerClient = this.blobServiceClient.GetBlobContainerClient("songsetbuilder");
     }
 
     public async Task EnsureInitialized()
     {
-        await this.blobServiceClient.GetBlobContainerClient("songsetbuilder").CreateIfNotExistsAsync();
+        await this.globalContainerClient.CreateIfNotExistsAsync();
     }
 
     public ITenantDataClient GetTenantDataClient(Tenant tenant)
@@ -45,96 +37,48 @@ public class Data : IData
             this.blobServiceClient.GetBlobContainerClient($"songsetbuilder-{tenant.Id.ToLower()}"),
             tenant
         );
-}
 
-public class TenantDataClient : ITenantDataClient
-{
-    private readonly BlobContainerClient tenantContainer;
-    private readonly Tenant tenant;
-
-    public TenantDataClient(BlobContainerClient tenantContainer, Tenant tenant)
+    public async Task<UserModel?> GetUser(string username, CancellationToken cancellationToken)
     {
-        this.tenantContainer = tenantContainer;
-        this.tenant = tenant;
-    }
+        var blobClient = this.globalContainerClient.GetBlobClient($"users/{username.ToLower()}");
 
-    public async Task EnsureInitialized()
-    {
-        await this.tenantContainer.CreateIfNotExistsAsync();
-    }
-
-    public async Task<IEnumerable<SongModel>> GetSongsAsync(CancellationToken cancellationToken)
-    {
-        var blobsIterator = this.tenantContainer.GetBlobsAsync(prefix: "songs/", cancellationToken: cancellationToken);
-
-        var songs = new List<SongModel>();
-
-        await foreach (var blob in blobsIterator)
+        if (!await blobClient.ExistsAsync(cancellationToken))
         {
-            var blobClient = this.tenantContainer.GetBlobClient(blob.Name);
-            var contents = (await blobClient.OpenReadAsync(cancellationToken: cancellationToken))!;
-            var song = (await Json.DeserializeAsync<SongModel>(contents, cancellationToken))!;
-            songs.Add(song);
+            return null;
         }
 
-        return songs;
+        var contents = (await blobClient.OpenReadAsync(cancellationToken: cancellationToken))!;
+        var user = (await Json.DeserializeAsync<UserModel>(contents, cancellationToken))!;
+
+        return user;
     }
 
-    public async Task<Result> AddSongAsync(SongModel song, CancellationToken cancellationToken)
+    public async Task<Result> AddUser(UserModel user, CancellationToken cancellationToken)
     {
-        var blobClient = this.tenantContainer.GetBlobClient($"songs/{song.Id}.json");
+        var blobClient = this.globalContainerClient.GetBlobClient($"users/{user.Username.ToLower()}.json");
 
         if (await blobClient.ExistsAsync(cancellationToken))
         {
             return Result.Fail(new ConflictError());
         }
 
-        var contents = (await blobClient.OpenWriteAsync(true, cancellationToken: cancellationToken))!;
+        var contents = (await blobClient.OpenWriteAsync(
+            overwrite: true, 
+            options: new BlobOpenWriteOptions()
+            {
+                Tags = new Dictionary<string, string>()
+                {
+                    ["userId"] = user.Id.ToString()
+                }
+            },
+            cancellationToken: cancellationToken
+        ))!;
 
-        await Json.SerializeAsync(contents, song, cancellationToken);
+        await Json.SerializeAsync(contents, user, cancellationToken);
 
         await contents.FlushAsync();
         
         return Result.Ok();
     }
-
-    public Task<Result> UpdateSongAsync(SongModel song, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<Result> DeleteSongAsync(Guid songId, CancellationToken cancellationToken)
-    {
-        var blobClient = this.tenantContainer.GetBlobClient($"songs/{songId}.json");
-        if (await blobClient.ExistsAsync(cancellationToken))
-        {
-            await blobClient.DeleteAsync(cancellationToken: cancellationToken);
-
-            return Result.Ok();
-        }
-        else
-        {
-            return Result.Fail(new NotFoundError());
-        }
-    }
-
-    public Task<IEnumerable<WorshipOrder>> GetWorshipOrders(CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Result> AddWorshipOrderAsync(WorshipOrder song, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Result> DeleteWorshipOrderAsync(Guid worshipOrderId, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<Result> UpdateWorshipOrderAsync(WorshipOrder song, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
 }
+

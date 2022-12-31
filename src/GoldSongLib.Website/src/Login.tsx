@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { loginWithGoogleToken } from "./services/apiClient";
 import { useNavigate } from "react-router-dom";
 
-
 const GOOGLE_CLIENT_ID = "991924951144-qs1d1be85pncp78eh2m29ndrri8qb46h.apps.googleusercontent.com";
 
 export default function Login() {
@@ -47,8 +46,11 @@ export default function Login() {
   };
 
   return <div>
-    <h1>Login</h1>
-    <div>
+    <div style={{
+      width: '20em',
+      margin: 'auto'
+    }}>
+      <h1>Login</h1>
       <div className="g_id_signin" />
 
     </div>

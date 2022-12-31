@@ -17,10 +17,12 @@ var privateKey = File.ReadAllText("../../cert/private_key.pem");
 var rsa = System.Security.Cryptography.RSA.Create();
 rsa.ImportFromPem(privateKey);
 var jwtSigningKey = new RsaSecurityKey(rsa);
+var signingCredentials = new SigningCredentials(jwtSigningKey, SecurityAlgorithms.RsaSha256Signature);
+
 
 // Add services to the container.
 builder.Services.AddCore(configuration);
-builder.Services.AddSingleton<AsymmetricSecurityKey>(jwtSigningKey);
+builder.Services.AddSingleton<SigningCredentials>(signingCredentials);
 builder.Services.AddScoped<ITenantDataClient>(p => {
     var data = p.GetRequiredService<IData>();
     var httpContext = p.GetRequiredService<IHttpContextAccessor>().HttpContext;

@@ -31,8 +31,9 @@ public class UserController : ControllerBase
     public async Task<ActionResult> Login(
         [FromBody, Required]LoginBody body,
         [FromServices]HttpClient httpClient,
-        [FromServices]AsymmetricSecurityKey jwtSigningKey,
-        [FromServices] Core.IData dataClient
+        [FromServices]SigningCredentials signingCredentials,
+        [FromServices] Core.IData dataClient,
+        CancellationToken cancellationToken
     )
     {
         var googleTokenInfoUrl = $"https://oauth2.googleapis.com/tokeninfo?id_token={body.GoogleToken}";
@@ -47,24 +48,38 @@ public class UserController : ControllerBase
 
         var tenant = "GoldAveChurch";
         var email = content!["email"];
-        var name = content!["name"];
-        var givenName = content!["given_name"];
-        var familyName = content!["family_name"];
 
-        var signingCredentials = new SigningCredentials(jwtSigningKey, SecurityAlgorithms.RsaSha256Signature);
+        var user = await dataClient.GetUser(email, cancellationToken);
+        if (user == null)
+        {
+            var name = content!["name"];
+            var givenName = content!["given_name"];
+            var familyName = content!["family_name"];
+
+            user = new Core.Models.UserModel(
+                Guid.NewGuid(),
+                email,
+                givenName,
+                familyName,
+                name,
+                new [] { tenant } 
+            );
+            await dataClient.AddUser(user, cancellationToken);
+        }
 
         var token = new JwtSecurityToken(
             issuer: "SongSetBuilder",
             audience: "SongSetBuilder",
             claims: new [] {
-                new Claim("sub", email!),
-                new Claim("name", name),
-                new Claim("gn", givenName),
-                new Claim("fn", familyName),
-                new Claim("tenant", tenant),
+                new Claim("sub", user.Username!),
+                new Claim("name", user.FullName),
+                new Claim("gn", user.GivenName),
+                new Claim("fn", user.FamilyName),
+                new Claim("tenant", user.Tenants.First()),
             },
             expires: DateTime.Now.AddHours(1),
-            signingCredentials: signingCredentials);
+            signingCredentials: signingCredentials
+        );
 
         var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
