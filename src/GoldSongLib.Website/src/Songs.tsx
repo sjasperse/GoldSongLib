@@ -1,5 +1,6 @@
-import { lazy, useEffect, useState } from "react"
+import { lazy, useContext, useEffect, useState } from "react"
 import { Link } from "react-router-dom";
+import { AppContext } from "./AppContext";
 import Loading from "./Loading";
 import { getSongs } from "./services/apiClient";
 import newGuid from "./services/newGuid";
@@ -10,20 +11,11 @@ type Song = {
 }
 
 export default function Songs() {
-  const [songs, setSongs] = useState<Song[]>();
-
-  useEffect(() => {
-    loadSongs();
-  }, []);
-
-  async function loadSongs() {
-    const songs = await getSongs();
-    setSongs(songs);
-  }
+  const { songs, refreshSongs } = useContext(AppContext);
 
   async function deleteSong(id: string) {
     await deleteSong(id);
-    await loadSongs();
+    await refreshSongs();
   }
 
 

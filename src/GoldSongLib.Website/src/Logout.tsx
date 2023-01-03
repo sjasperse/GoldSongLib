@@ -2,12 +2,12 @@ import { Navigate } from "react-router";
 import { User } from "./types";
 
 type LogoutParams = {
-  setUser: (user: User | null) => void
+  onLoggedOut: () => void
 };
 
-export default function Logout({ setUser }: LogoutParams) {
+export default function Logout({ onLoggedOut }: LogoutParams) {
   localStorage.removeItem('token');
-  setUser(null);
+  onLoggedOut();
 
   return <Navigate to="/" />
 }

@@ -1,10 +1,14 @@
 import React from "react"
-import { User } from "./types"
+import { Song, User } from "./types"
 
-type AppContextValues = {
-  user: User | null
+export type AppContextValues = {
+  user: User | null,
+  songs: Song[] | null,
+  refreshSongs: () => Promise<void>
 }
 
 export const AppContext = React.createContext<AppContextValues>({
-  user: null
+  user: null,
+  songs: [],
+  refreshSongs: () => Promise.resolve()
 })

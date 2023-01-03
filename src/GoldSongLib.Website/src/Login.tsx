@@ -6,10 +6,10 @@ import { User } from "./types";
 const GOOGLE_CLIENT_ID = "991924951144-qs1d1be85pncp78eh2m29ndrri8qb46h.apps.googleusercontent.com";
 
 type LoginParams = {
-  setUser: (user: User) => void
+  onLoggedIn: (user: User) => void
 };
 
-export default function Login({ setUser }: LoginParams) {
+export default function Login({ onLoggedIn }: LoginParams) {
   const [gsiScriptLoaded, setGsiScriptLoaded] = useState(false);
   const navigate = useNavigate();
 
@@ -46,7 +46,7 @@ export default function Login({ setUser }: LoginParams) {
     const loginResponse = await loginWithGoogleToken(res.credential);
 
     localStorage.setItem('token', loginResponse.token);
-    setUser(loginResponse.user);
+    onLoggedIn(loginResponse.user);
 
     navigate('/');
   };

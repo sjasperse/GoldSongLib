@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react';
+import { MouseEvent, useContext } from 'react';
 import { Formik, FormikContext, FormikErrors, FormikProps, useField, useFormik, useFormikContext, validateYupSchema } from 'formik';
 import _ from 'lodash';
 import { Song, WorshipOrder, WorshipOrderSong, WorshipOrderSongSet } from '../types';
@@ -6,6 +6,7 @@ import DatePicker from 'react-datepicker';
 import './WorshipOrderEditorForm.scss';
 import { useDrop } from 'react-dnd';
 import newGuid from '../services/newGuid';
+import { AppContext } from '../AppContext';
 
 export type WorshipOrderEditorFormParams = {
   origWorshipOrder: WorshipOrder,
@@ -18,6 +19,8 @@ type GetFieldProps = (name: string) => {
   onChange: (e: React.ChangeEvent<any>) => void,
   onBlur: (e: React.ChangeEvent<any>) => void
 };
+
+type GetSongTitleById = (id: string) => string;
 
 export default function WorshipOrderEditorForm({ origWorshipOrder, onSubmit }:WorshipOrderEditorFormParams
 ) {
@@ -32,6 +35,10 @@ export default function WorshipOrderEditorForm({ origWorshipOrder, onSubmit }:Wo
 }
 
 function Form(formik: FormikProps<WorshipOrder>) {
+  const { songs } = useContext(AppContext);
+  const songsById = songs!.reduce((p: { [id: string]: Song }, x) => { p[x.id] = x; return p; }, {});
+  const getSongTitle = (songId: string) => songsById[songId].name;
+
   const onAddSongSet = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
@@ -65,7 +72,8 @@ function Form(formik: FormikProps<WorshipOrder>) {
                   key={songSetIndex} 
                   name={`songSets[${songSetIndex}]`} 
                   songSet={songSet} 
-                  fieldPropsFor={fieldPropsFor} 
+                  fieldPropsFor={fieldPropsFor}
+                  getSongTitle={getSongTitle}
                 />)}
             </ul>
             <button onClick={onAddSongSet}>Add Song Set</button>
@@ -98,7 +106,7 @@ function DatePickerField({ name, ...props }: {
   );
 }
 
-function SongSetComponent({ name, songSet, fieldPropsFor }: { name: string, songSet: WorshipOrderSongSet, fieldPropsFor: GetFieldProps }) {
+function SongSetComponent({ name, songSet, fieldPropsFor, getSongTitle }: { name: string, songSet: WorshipOrderSongSet, fieldPropsFor: GetFieldProps, getSongTitle: GetSongTitleById }) {
   const { values, setFieldValue } = useFormikContext();
   
   const [{ canDrop, isOver}, drop] = useDrop({
@@ -123,7 +131,6 @@ function SongSetComponent({ name, songSet, fieldPropsFor }: { name: string, song
         ...songSet.songs,
         {
           id: newGuid(),
-          name: song.name,
           songId: song.id,
         }
       ]
@@ -140,7 +147,8 @@ function SongSetComponent({ name, songSet, fieldPropsFor }: { name: string, song
         <SongComponent 
           key={song.id} 
           name={`${name}.songs[${songIndex}]`} 
-          song={song} 
+          song={song}
+          getSongTitle={getSongTitle}
         />)}
     </ul>
 
@@ -148,8 +156,8 @@ function SongSetComponent({ name, songSet, fieldPropsFor }: { name: string, song
   </fieldset>
 }
 
-function SongComponent({ name, song }: { name: string, song: WorshipOrderSong }) {
-  return <li key={song.songId}>{song.name}</li>
+function SongComponent({ name, song, getSongTitle }: { name: string, song: WorshipOrderSong, getSongTitle: GetSongTitleById }) {
+  return <li key={song.songId}>{getSongTitle(song.songId)}</li>
 }
 
 export type SongDropResult = {

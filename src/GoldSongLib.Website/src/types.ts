@@ -19,7 +19,6 @@ export type WorshipOrderSongSet = {
 
 export type WorshipOrderSong = {
   id: string,
-  name: string
   songId: string,
 }
 

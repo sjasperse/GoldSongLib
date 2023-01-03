@@ -1,16 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useDrag } from "react-dnd";
+import { AppContext } from "../AppContext";
 import Loading from "../Loading";
-import { getSongs } from "../services/apiClient";
 import { Song } from "../types";
 import { SongDropResult } from "./WorshipOrderEditorForm";
 
 export default function SongReferenceLibrary() {
-  const [songs, setSongs] = useState<Song[]>();
-
-  useEffect(() => {
-    getSongs().then(setSongs);
-  }, []);
+  const { songs } = useContext(AppContext);
 
   return <div>
     <h2>Songs</h2>

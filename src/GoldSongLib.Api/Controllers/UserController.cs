@@ -14,11 +14,17 @@ namespace GoldSongLib.Api.Controllers;
 public class UserController : ControllerBase
 {
     [HttpGet]
+    [AllowAnonymous]
     public async Task<ActionResult> GetUser(
         [FromServices] Core.IData dataClient,
         CancellationToken cancellationToken    
     )
     {
+        if (this.User.Identity?.IsAuthenticated != true)
+        {
+            return this.Ok();
+        }
+        
         var username = this.User.Claims.First(x => x.Type == "sub").Value;
         var user = await dataClient.GetUser(username, cancellationToken);
         return this.Ok(user);
